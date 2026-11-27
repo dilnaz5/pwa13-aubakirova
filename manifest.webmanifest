@@ -1,7 +1,7 @@
 
 {
-  "name": "Qarжы бақылау — Жеке қаржы көмекшісі",
-  "short_name": "Qarжы",
+  "name": "MyFinance — Жеке қаржы көмекшісі",
+  "short_name": "MyFinance",
   "description": "Жеке шығындарды есепке алу және бюджетті бақылау",
   "lang": "kk",
   "start_url": "./",
