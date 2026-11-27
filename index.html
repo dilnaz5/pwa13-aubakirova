@@ -1,0 +1,855 @@
+
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16866b">
+  <meta name="description" content="Жеке шығындарды есепке алу және бюджетті бақылау">
+  <title>Qarжы бақылау</title>
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f7f5;
+      color: #263b35;
+      min-height: 100vh;
+      padding: 25px 15px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 45px;
+      height: 45px;
+      background: #16866b;
+      color: white;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #176d59;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #82928b;
+      margin-top: 4px;
+    }
+
+    .lang-btn {
+      border: 1px solid #dce7e1;
+      background: white;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      color: #176d59;
+      font-weight: bold;
+    }
+
+    .welcome {
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 {
+      font-size: 23px;
+      margin-bottom: 7px;
+    }
+
+    .welcome p {
+      color: #82928b;
+      font-size: 14px;
+    }
+
+    .summary {
+      background: linear-gradient(135deg, #16866b, #32a88a);
+      color: white;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 22px rgba(22, 134, 107, 0.15);
+    }
+
+    .summary-label {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .total {
+      font-size: 34px;
+      font-weight: bold;
+      margin: 12px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .summary-info {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .card {
+      background: white;
+      padding: 23px;
+      border-radius: 17px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 15px rgba(30, 70, 55, 0.04);
+    }
+
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+      color: #53665e;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #dce7e1;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      background: #fbfdfc;
+      color: #263b35;
+    }
+
+    input:focus, select:focus {
+      border-color: #16866b;
+      box-shadow: 0 0 0 3px rgba(22, 134, 107, 0.10);
+    }
+
+    .add-btn {
+      width: 100%;
+      border: none;
+      background: #16866b;
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #116c56;
+    }
+
+    .expenses-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .expenses-header h3 {
+      margin: 0;
+    }
+
+    .count {
+      color: #16866b;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .expense-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 0;
+      border-bottom: 1px solid #edf1ee;
+    }
+
+    .expense-item:last-child {
+      border-bottom: none;
+    }
+
+    .expense-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .expense-icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      background: #eaf6f0;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+
+    .expense-name {
+      font-weight: bold;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .expense-details {
+      font-size: 12px;
+      color: #91a098;
+      margin-top: 5px;
+    }
+
+    .expense-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .expense-amount {
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .delete-btn {
+      border: none;
+      background: #fff0ee;
+      color: #dc6255;
+      border-radius: 8px;
+      padding: 9px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .delete-btn:hover {
+      background: #ffe0dc;
+    }
+
+    .empty {
+      text-align: center;
+      color: #91a098;
+      padding: 35px 10px;
+      font-size: 14px;
+    }
+
+    .empty-icon {
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      text-align: center;
+      color: #a0ada6;
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    @media (max-width: 500px) {
+      body {
+        padding: 18px 12px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .total {
+        font-size: 29px;
+      }
+
+      .expense-right {
+        gap: 7px;
+      }
+
+      .expense-amount {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">₸</div>
+      <div>
+        <h1>Qarжы бақылау</h1>
+        <div class="subtitle" data-i18n="subtitle">
+          Жеке қаржы көмекшісі
+        </div>
+      </div>
+    </div>
+
+    <button class="lang-btn" id="languageBtn" type="button">
+      RU
+    </button>
+  </header>
+
+  <section class="welcome">
+    <h2 data-i18n="welcome">Қош келдіңіз!</h2>
+    <p data-i18n="welcomeText">
+      Күнделікті шығындарыңызды бақылаңыз.
+    </p>
+  </section>
+
+  <section class="summary">
+    <div class="summary-label" data-i18n="totalLabel">
+      Жалпы шығындар
+    </div>
+
+    <div class="total" id="totalAmount">0 ₸</div>
+
+    <div class="summary-info">
+      <span data-i18n="records">Шығындар саны:</span>
+      <span id="totalCount">0</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3 data-i18n="addTitle">+ Шығын қосу</h3>
+
+    <form id="expenseForm">
+
+      <div class="form-group">
+        <label for="expenseName" data-i18n="nameLabel">
+          Шығын атауы
+        </label>
+
+        <input
+          type="text"
+          id="expenseName"
+          maxlength="60"
+          required
+          autocomplete="off"
+          placeholder="Мысалы: Азық-түлік"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="expenseAmount" data-i18n="amountLabel">
+          Сомасы (₸)
+        </label>
+
+        <input
+          type="number"
+          id="expenseAmount"
+          min="0.01"
+          max="1000000000000"
+          step="0.01"
+          required
+          placeholder="Мысалы: 5000"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="expenseCategory" data-i18n="categoryLabel">
+          Санат
+        </label>
+
+        <select id="expenseCategory" required>
+          <option value="food" data-i18n="food">Азық-түлік</option>
+          <option value="transport" data-i18n="transport">Көлік</option>
+          <option value="shopping" data-i18n="shopping">Сатып алу</option>
+          <option value="health" data-i18n="health">Денсаулық</option>
+          <option value="entertainment" data-i18n="entertainment">Демалыс</option>
+          <option value="other" data-i18n="other">Басқа</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="expenseDate" data-i18n="dateLabel">
+          Күні
+        </label>
+
+        <input type="date" id="expenseDate" required>
+      </div>
+
+      <button type="submit" class="add-btn" data-i18n="addButton">
+        + Шығынды қосу
+      </button>
+
+    </form>
+  </section>
+
+  <section class="card">
+
+    <div class="expenses-header">
+      <h3 data-i18n="historyTitle">Шығындар тарихы</h3>
+      <span class="count" id="expenseCount">0</span>
+    </div>
+
+    <div id="expenseList" aria-live="polite">
+    </div>
+
+  </section>
+
+  <footer data-i18n="footer">
+    Qarжы бақылау © 2026
+  </footer>
+
+</div>
+
+<script>
+  // Переводы интерфейса
+  const translations = {
+    kk: {
+      subtitle: "Жеке қаржы көмекшісі",
+      welcome: "Қош келдіңіз!",
+      welcomeText: "Күнделікті шығындарыңызды бақылаңыз.",
+      totalLabel: "Жалпы шығындар",
+      records: "Шығындар саны:",
+      addTitle: "+ Шығын қосу",
+      nameLabel: "Шығын атауы",
+      amountLabel: "Сомасы (₸)",
+      categoryLabel: "Санат",
+      dateLabel: "Күні",
+      food: "Азық-түлік",
+      transport: "Көлік",
+      shopping: "Сатып алу",
+      health: "Денсаулық",
+      entertainment: "Демалыс",
+      other: "Басқа",
+      addButton: "+ Шығынды қосу",
+      historyTitle: "Шығындар тарихы",
+      empty: "Әзірге шығындар жоқ. Бірінші шығынды қосыңыз!",
+      delete: "Өшіру",
+      success: "Шығын сәтті қосылды!",
+      invalidName: "Шығын атауын дұрыс енгізіңіз.",
+      invalidAmount: "Соманы 0-ден үлкен сан ретінде енгізіңіз.",
+      invalidDate: "Күнді дұрыс таңдаңыз.",
+      storageError: "Деректерді сақтау мүмкін болмады.",
+      footer: "Qarжы бақылау © 2026",
+      categories: {
+        food: "Азық-түлік",
+        transport: "Көлік",
+        shopping: "Сатып алу",
+        health: "Денсаулық",
+        entertainment: "Демалыс",
+        other: "Басқа"
+      }
+    },
+
+    ru: {
+      subtitle: "Личный финансовый помощник",
+      welcome: "Добро пожаловать!",
+      welcomeText: "Контролируйте свои ежедневные расходы.",
+      totalLabel: "Общая сумма расходов",
+      records: "Количество расходов:",
+      addTitle: "+ Добавить расход",
+      nameLabel: "Название расхода",
+      amountLabel: "Сумма (₸)",
+      categoryLabel: "Категория",
+      dateLabel: "Дата",
+      food: "Продукты",
+      transport: "Транспорт",
+      shopping: "Покупки",
+      health: "Здоровье",
+      entertainment: "Развлечения",
+      other: "Другое",
+      addButton: "+ Добавить расход",
+      historyTitle: "История расходов",
+      empty: "Пока расходов нет. Добавьте первую запись!",
+      delete: "Удалить",
+      success: "Расход успешно добавлен!",
+      invalidName: "Введите корректное название расхода.",
+      invalidAmount: "Введите сумму больше нуля.",
+      invalidDate: "Выберите корректную дату.",
+      storageError: "Не удалось сохранить данные.",
+      footer: "Qarжы бақылау © 2026",
+      categories: {
+        food: "Продукты",
+        transport: "Транспорт",
+        shopping: "Покупки",
+        health: "Здоровье",
+        entertainment: "Развлечения",
+        other: "Другое"
+      }
+    }
+  };
+
+  // Основные переменные
+  const STORAGE_KEY = "qarjyExpenses";
+  const LANGUAGE_KEY = "qarjyLanguage";
+
+  let expenses = [];
+  let currentLanguage = "kk";
+
+  const form = document.getElementById("expenseForm");
+  const nameInput = document.getElementById("expenseName");
+  const amountInput = document.getElementById("expenseAmount");
+  const categoryInput = document.getElementById("expenseCategory");
+  const dateInput = document.getElementById("expenseDate");
+
+  const expenseList = document.getElementById("expenseList");
+  const totalAmount = document.getElementById("totalAmount");
+  const totalCount = document.getElementById("totalCount");
+  const expenseCount = document.getElementById("expenseCount");
+  const languageBtn = document.getElementById("languageBtn");
+
+  const categoryIcons = {
+    food: "🛒",
+    transport: "🚕",
+    shopping: "🛍️",
+    health: "💊",
+    entertainment: "🎬",
+    other: "📌"
+  };
+
+  // Безопасная загрузка данных
+  function loadExpenses() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (!saved) return [];
+
+      const parsed = JSON.parse(saved);
+
+      if (!Array.isArray(parsed)) return [];
+
+      return parsed.filter(item =>
+        item &&
+        typeof item.id === "string" &&
+        typeof item.name === "string" &&
+        item.name.trim().length > 0 &&
+        typeof item.amount === "number" &&
+        Number.isFinite(item.amount) &&
+        item.amount > 0 &&
+        item.amount <= 1000000000000 &&
+        ["food", "transport", "shopping", "health",
+         "entertainment", "other"].includes(item.category) &&
+        typeof item.date === "string" &&
+        /^\d{4}-\d{2}-\d{2}$/.test(item.date) &&
+        !Number.isNaN(Date.parse(item.date))
+      );
+    } catch (error) {
+      console.error("Ошибка загрузки:", error);
+      return [];
+    }
+  }
+
+  // Сохранение в localStorage
+  function saveExpenses() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+      return true;
+    } catch (error) {
+      console.error("Ошибка сохранения:", error);
+      alert(translations[currentLanguage].storageError);
+      return false;
+    }
+  }
+
+  // Форматирование денежных значений
+  function formatMoney(value) {
+    return new Intl.NumberFormat(
+      currentLanguage === "kk" ? "kk-KZ" : "ru-RU",
+      { maximumFractionDigits: 2 }
+    ).format(value) + " ₸";
+  }
+
+  // Форматирование даты
+  function formatDate(date) {
+    const [year, month, day] = date.split("-");
+
+    return new Intl.DateTimeFormat(
+      currentLanguage === "kk" ? "kk-KZ" : "ru-RU"
+    ).format(new Date(
+      Number(year), Number(month) - 1, Number(day)
+    ));
+  }
+
+  // Автоматический подсчёт расходов
+  function updateSummary() {
+    const total = expenses.reduce(
+      (sum, item) => sum + item.amount, 0
+    );
+
+    totalAmount.textContent = formatMoney(total);
+    totalCount.textContent = expenses.length;
+    expenseCount.textContent = expenses.length;
+  }
+
+  // Отображение списка расходов
+  function renderExpenses() {
+    expenseList.replaceChildren();
+
+    if (expenses.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+
+      const icon = document.createElement("div");
+      icon.className = "empty-icon";
+      icon.textContent = "🧾";
+
+      const message = document.createElement("p");
+      message.textContent = translations[currentLanguage].empty;
+
+      empty.append(icon, message);
+      expenseList.appendChild(empty);
+
+      updateSummary();
+      return;
+    }
+
+    // Сначала показываем последние расходы
+    const sorted = [...expenses].sort((a, b) =>
+      b.date.localeCompare(a.date) ||
+      b.id.localeCompare(a.id)
+    );
+
+    sorted.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "expense-item";
+
+      const left = document.createElement("div");
+      left.className = "expense-left";
+
+      const icon = document.createElement("div");
+      icon.className = "expense-icon";
+      icon.textContent = categoryIcons[item.category];
+
+      const details = document.createElement("div");
+
+      const name = document.createElement("div");
+      name.className = "expense-name";
+
+      // Пользовательский текст выводится безопасно
+      name.textContent = item.name;
+
+      const info = document.createElement("div");
+      info.className = "expense-details";
+
+      const categoryName =
+        translations[currentLanguage].categories[item.category];
+
+      info.textContent =
+        categoryName + " • " + formatDate(item.date);
+
+      details.append(name, info);
+      left.append(icon, details);
+
+      const right = document.createElement("div");
+      right.className = "expense-right";
+
+      const amount = document.createElement("div");
+      amount.className = "expense-amount";
+      amount.textContent = formatMoney(item.amount);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "delete-btn";
+      deleteButton.type = "button";
+      deleteButton.textContent = "✕";
+      deleteButton.setAttribute(
+        "aria-label",
+        translations[currentLanguage].delete
+      );
+
+      deleteButton.addEventListener("click", () => {
+        deleteExpense(item.id);
+      });
+
+      right.append(amount, deleteButton);
+      row.append(left, right);
+
+      expenseList.appendChild(row);
+    });
+
+    updateSummary();
+  }
+
+  // Добавление расхода
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = nameInput.value.trim();
+    const amount = Number(amountInput.value);
+    const category = categoryInput.value;
+    const date = dateInput.value;
+
+    const t = translations[currentLanguage];
+
+    if (!name || name.length > 60) {
+      alert(t.invalidName);
+      return;
+    }
+
+    if (
+      !Number.isFinite(amount) ||
+      amount <= 0 ||
+      amount > 1000000000000
+    ) {
+      alert(t.invalidAmount);
+      return;
+    }
+
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      alert(t.invalidDate);
+      return;
+    }
+
+    const dateObject = new Date(date + "T00:00:00");
+
+    if (
+      Number.isNaN(dateObject.getTime()) ||
+      dateObject.toISOString().slice(0, 10) !== date
+    ) {
+      alert(t.invalidDate);
+      return;
+    }
+
+    const expense = {
+      id: crypto.randomUUID(),
+      name: name,
+      amount: amount,
+      category: category,
+      date: date
+    };
+
+    expenses.push(expense);
+
+    if (!saveExpenses()) {
+      expenses.pop();
+      return;
+    }
+
+    form.reset();
+    dateInput.value = getToday();
+
+    renderExpenses();
+  });
+
+  // Удаление расхода
+  function deleteExpense(id) {
+    const oldExpenses = expenses;
+    expenses = expenses.filter(item => item.id !== id);
+
+    if (!saveExpenses()) {
+      expenses = oldExpenses;
+      return;
+    }
+
+    renderExpenses();
+  }
+
+  // Текущая дата
+  function getToday() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  // Переключение языка
+  function changeLanguage() {
+    currentLanguage =
+      currentLanguage === "kk" ? "ru" : "kk";
+
+    try {
+      localStorage.setItem(LANGUAGE_KEY, currentLanguage);
+    } catch (error) {
+      console.warn("Не удалось сохранить язык:", error);
+    }
+
+    applyLanguage();
+  }
+
+  // Применение переводов
+  function applyLanguage() {
+    const t = translations[currentLanguage];
+
+    document.documentElement.lang = currentLanguage;
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+      const key = element.dataset.i18n;
+
+      if (t[key]) {
+        element.textContent = t[key];
+      }
+    });
+
+    nameInput.placeholder = currentLanguage === "kk"
+      ? "Мысалы: Азық-түлік"
+      : "Например: Продукты";
+
+    languageBtn.textContent =
+      currentLanguage === "kk" ? "RU" : "ҚАЗ";
+
+    renderExpenses();
+  }
+
+  languageBtn.addEventListener("click", changeLanguage);
+
+  // Первоначальная загрузка
+  try {
+    const savedLanguage = localStorage.getItem(LANGUAGE_KEY);
+
+    if (savedLanguage === "kk" || savedLanguage === "ru") {
+      currentLanguage = savedLanguage;
+    }
+  } catch (error) {
+    console.warn("Не удалось загрузить язык:", error);
+  }
+
+  expenses = loadExpenses();
+  dateInput.value = getToday();
+
+  applyLanguage();
+
+  // Регистрация Service Worker
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js")
+        .catch(error => {
+          console.error("Ошибка регистрации Service Worker:", error);
+        });
+    });
+  }
+</script>
+
+</body>
+</html>
