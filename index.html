@@ -797,43 +797,46 @@ if (
     return `${year}-${month}-${day}`;
   }
 
-  // Переключение языка
-  function changeLanguage() {
-    currentLanguage =
-      currentLanguage === "kk" ? "ru" : "kk";
+  
+function changeLanguage() {
+  currentLanguage = currentLanguage === "kk" ? "ru" : "kk";
 
-    try {
-      localStorage.setItem(LANGUAGE_KEY, currentLanguage);
-    } catch (error) {
-      console.warn("Не удалось сохранить язык:", error);
+  try {
+    localStorage.setItem(LANGUAGE_KEY, currentLanguage);
+  } catch (error) {
+    console.warn("Не удалось сохранить язык:", error);
+  }
+
+  applyLanguage();
+}
+
+function applyLanguage() {
+  const t = translations[currentLanguage];
+
+  document.documentElement.lang = currentLanguage;
+
+  document.querySelectorAll("[data-i18n]").forEach(element => {
+    const key = element.dataset.i18n;
+
+    if (t[key]) {
+      element.textContent = t[key];
     }
+  });
 
-    applyLanguage();
-  }
+  nameInput.placeholder = currentLanguage === "kk"
+    ? "Мысалы: Азық-түлік"
+    : "Например: Продукты";
 
-  // Применение переводов
-  function applyLanguage() {
-    const t = translations[currentLanguage];
+  amountInput.placeholder = currentLanguage === "kk"
+    ? "Мысалы: 5000"
+    : "Например: 5000";
 
-    document.documentElement.lang = currentLanguage;
+  languageBtn.textContent =
+    currentLanguage === "kk" ? "RU" : "ҚАЗ";
 
-    document.querySelectorAll("[data-i18n]").forEach(element => {
-      const key = element.dataset.i18n;
+  renderExpenses();
+}
 
-      if (t[key]) {
-        element.textContent = t[key];
-      }
-    });
-
-    nameInput.placeholder = currentLanguage === "kk"
-      ? "Мысалы: Азық-түлік"
-      : "Например: Продукты";
-
-    languageBtn.textContent =
-      currentLanguage === "kk" ? "RU" : "ҚАЗ";
-
-    renderExpenses();
-  }
 
   languageBtn.addEventListener("click", changeLanguage);
 
